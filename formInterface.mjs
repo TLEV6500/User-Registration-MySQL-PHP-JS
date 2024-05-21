@@ -79,7 +79,7 @@ export default class RegistrationForm {
 
   #initSubmitBtn(text) {
     const btn = createElement('input', {
-      id: this.#HTMLRoot.id + 'submit',
+      id: this.#HTMLRoot.id + '_submit',
       classList: ['submit'],
       attributes: {
         type: 'submit',
