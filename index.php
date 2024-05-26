@@ -1,3 +1,8 @@
+<?php
+session_start();
+require_once('connect.php');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,8 +22,16 @@
     </div> -->
   </nav>
 
+  <section id="section_welcome" class="section welcome">
+    <?php
+      $firstname = $_SESSION['firstname'];
+      if ($firstname) echo "Welcome $firstname.";
+      else echo "Welcome."
+    ?>
+  </section>
+
   <main id="main_form">
-    <form action="" method="post" target="" id="form_body">
+    <form action="processForm.php" method="post" id="form_body" target="_self">
       <!-- JS INSERTION HERE -->
     </form>
   </main>

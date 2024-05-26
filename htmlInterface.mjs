@@ -1,4 +1,5 @@
 "use strict";
+import { toKebabCase, toSnakeCase } from "./formatter.mjs";
 
 const createElement = (tagName, { id = '', classList = [], attributes = {} } = {}) => {
   const element = document.createElement(tagName);
@@ -28,4 +29,26 @@ const wrapHTML = (wrapperTagName, ...contents) => {
   return wrapper;
 }
 
-export { createElement, insertNewElement, wrapHTML };
+const initHTMLElement = (callback = (id, element) => { }, HTMLType, baseId, baseClassName, attributes) => {
+  const id = `${HTMLType}_${baseId}`;
+  const element = createElement(HTMLType, {
+    id,
+    classList: [HTMLType, ...(baseClassName ? [baseClassName] : [])],
+    attributes
+  });
+  callback(id, element);
+  return element;
+}
+
+const initHTMLChildren = (element, children) => {
+  for (const [HTMLtype, innerText, childAttributes] of children) {
+    const child = createElement(HTMLtype, {
+      id: `${element.id}_${toSnakeCase(innerText)}`,
+      attributes: { innerText, ...childAttributes }
+    })
+    element.append(child);
+  }
+  return;
+}
+
+export { createElement, getElement, insertNewElement, wrapHTML, initHTMLElement, initHTMLChildren };

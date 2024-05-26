@@ -1,40 +1,18 @@
 "use strict";
 import { toKebabCase, toSnakeCase } from "./formatter.mjs";
-import { createElement, insertNewElement, wrapHTML } from "./htmlInterface.mjs";
+import { createElement, initHTMLChildren, initHTMLElement } from "./htmlInterface.mjs";
 
 
 export default class RegistrationForm {
   #HTML = new Map();
-  #DATA = new Map();
   #HTMLRoot;
 
-  #initHTMLElement(HTMLType, baseId, baseClassName, attributes) {
-    const id = `${HTMLType}_${baseId}`;
-    const element = createElement(HTMLType, {
-      id,
-      classList: [HTMLType, baseClassName],
-      attributes
-    });
-    this.#HTML.set(id, element);
-    return element;
-  }
-
-  #initHTMLChildren(element, children) {
-    for (const [HTMLtype, innerText, childAttributes] of children) {
-      const child = createElement(HTMLtype, {
-        id: `${element.id}_${toSnakeCase(innerText)}`,
-        attributes: { innerText, ...childAttributes }
-      })
-      element.append(child);
-    }
-    return;
-  }
-
   #initHTMLFieldset(labelElement, inputElement, baseId) {
-    const fieldSet = createElement('fieldset', {
-      id: `fieldset_${baseId}`,
-      attributes: { name: baseId }
-    });
+    const fieldSet = initHTMLElement(
+      (id, element) => this.#HTML.set(id, element),
+      'fieldset',
+      baseId,
+    );
     fieldSet.replaceChildren(labelElement, inputElement);
     return fieldSet;
   }
@@ -62,15 +40,18 @@ export default class RegistrationForm {
       const baseId = toSnakeCase(label);
       const baseClassName = toKebabCase(label);
 
-      const inputElement = this.#initHTMLElement(
+      const inputElement = initHTMLElement(
+        (id, element) => this.#HTML.set(id, element),
         HTMLInputType, baseId, baseClassName, HTMLAttributes
       );
 
-      const labelElement = this.#initHTMLElement(
-        'label', baseId, baseClassName, { htmlFor: inputElement.id, innerText: label }
+      const labelElement = initHTMLElement(
+        (id, element) => this.#HTML.set(id, element),
+        'label', baseId, baseClassName,
+        { htmlFor: inputElement.id, innerText: label }
       );
 
-      if (children) this.#initHTMLChildren(inputElement, children);
+      if (children) initHTMLChildren(inputElement, children);
 
       const fieldSet = this.#initHTMLFieldset(labelElement, inputElement, baseId);
       this.#HTMLRoot.append(fieldSet);
@@ -78,14 +59,13 @@ export default class RegistrationForm {
   }
 
   #initSubmitBtn(text) {
-    const btn = createElement('input', {
-      id: this.#HTMLRoot.id + '_submit',
-      classList: ['submit'],
-      attributes: {
-        type: 'submit',
-        value: text,
-      }
-    });
+    const btn = initHTMLElement(
+      (id, element) => this.#HTML.set(id, element),
+      'input',
+      this.#HTMLRoot.id + '_submit',
+      'submit',
+      { type: 'submit', value: text, }
+    );
     this.#HTMLRoot.append(btn);
   }
 
@@ -94,5 +74,12 @@ export default class RegistrationForm {
     this.#initFields(fields);
     this.#initSubmitBtn('Login/Register');
   }
+
+  // configureSubmit() {
+
+  // }
 }
 
+/** TODO
+ * Change #HTML to #FIELDS if you're only storing the label and their corresponding input elements of the form
+ */

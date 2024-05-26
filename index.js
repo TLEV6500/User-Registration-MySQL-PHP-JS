@@ -1,5 +1,6 @@
 "use strict";
 import RegistrationForm from "./formInterface.mjs";
+import { getElement } from "./htmlInterface.mjs";
 
 
 /* fields: {
@@ -85,6 +86,7 @@ const fields = {
     'input',
     {
       type: 'email',
+      name: 'email',
       placeholder: 'juan.delacruz@gmail.com',
       required: true,
       autocomplete: 'on',
@@ -95,6 +97,7 @@ const fields = {
     'input',
     {
       type: 'password',
+      name: 'password',
       required: true,
       autocomplete: 'on',
       pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@.#$!%*?&^])[A-Za-z\\d@.#$!%*?&]{8,15}$'
@@ -111,7 +114,7 @@ const fields = {
   ],
 };
 
-const HTMLForm = document.getElementById('form_body');
+const HTMLForm = getElement('#form_body');
 
 const form = new RegistrationForm(HTMLForm, fields);
 
