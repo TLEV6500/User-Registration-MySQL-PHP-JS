@@ -1,10 +1,12 @@
 "use strict";
 import { toKebabCase, toSnakeCase } from "./formatter.mjs";
-import { createElement, initHTMLChildren, initHTMLElement } from "./htmlInterface.mjs";
+import { initHTMLChildren, initHTMLElement, wrapHTML } from "./htmlInterface.mjs";
 
 
 export default class RegistrationForm {
   #HTML = new Map();
+  #HTMLInputs = new Map();
+  #HTMLLabels = new Map();
   #HTMLRoot;
 
   #initHTMLFieldset(labelElement, inputElement, baseId) {
@@ -41,12 +43,21 @@ export default class RegistrationForm {
       const baseClassName = toKebabCase(label);
 
       const inputElement = initHTMLElement(
-        (id, element) => this.#HTML.set(id, element),
+        (id, element) => {
+          this.#HTML.set(id, element);
+          if (element.type !== 'submit') this.#HTMLInputs.set(id, element);
+        },
         HTMLInputType, baseId, baseClassName, HTMLAttributes
       );
+      if (HTMLAttributes?.type === 'submit') inputElement.dataset.userInput = false;
+      else inputElement.dataset.userInput = true;
+      inputElement.tabIndex = -1;
 
       const labelElement = initHTMLElement(
-        (id, element) => this.#HTML.set(id, element),
+        (id, element) => {
+          this.#HTML.set(id, element);
+          this.#HTMLLabels.set(id, element);
+        },
         'label', baseId, baseClassName,
         { htmlFor: inputElement.id, innerText: label }
       );
@@ -58,26 +69,32 @@ export default class RegistrationForm {
     }
   }
 
-  #initSubmitBtn(text) {
+  #initSubmitBtn(btnText, label) {
     const btn = initHTMLElement(
       (id, element) => this.#HTML.set(id, element),
       'input',
       this.#HTMLRoot.id + '_submit',
       'submit',
-      { type: 'submit', value: text, }
+      { type: 'submit', value: btnText, }
     );
-    this.#HTMLRoot.append(btn);
+    const container = wrapHTML('div', btn);
+    container.classList.add('submit-btn_container');
+    this.#HTMLRoot.append(container);
   }
 
   constructor(rootForm, fields = {}) {
     this.#HTMLRoot = rootForm;
     this.#initFields(fields);
-    this.#initSubmitBtn('Login/Register');
+    // this.#initSubmitBtn('Login/Register');
   }
 
-  // configureSubmit() {
+  get inputs() {
+    return this.#HTMLInputs.values();
+  }
 
-  // }
+  get labels() {
+    return this.#HTMLLabels.values();
+  }
 }
 
 /** TODO
