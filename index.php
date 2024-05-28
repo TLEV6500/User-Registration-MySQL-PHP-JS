@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once('connect.php');
 ?>
 
@@ -12,6 +11,7 @@ require_once('connect.php');
   <title>VILLACIN CSIT201-F2 FINAL EXAM</title>
   <link rel="stylesheet" href="style.css">
   <script type="module" src="index.js" defer></script>
+  <script type="module" src="animations.js"></script>
 </head>
 
 <body>
@@ -22,19 +22,39 @@ require_once('connect.php');
     </div> -->
   </nav>
 
-  <section id="section_welcome" class="section welcome">
-    <?php
-      $firstname = $_SESSION['firstname'];
-      if ($firstname) echo "Welcome $firstname.";
-      else echo "Welcome."
-    ?>
-  </section>
+  <div class="main-container">
+    <section id="section_welcome" class="section welcome" data-cur-view="true">
+      <?php
+        session_start();
+        if ($_SESSION['firstname']) $firstname = $_SESSION['firstname'];
+        else $firstname = null;
+        $message = '';
+        $note = null;
+        $action = '';
+        if ($firstname) {
+          $message = "Welcome $firstname.";
+          $note = "Not You?";
+          $action = "Switch Account";
+        }
+        else {
+          $message = "Welcome.";
+          $action = "Register Now";
+        }
+        echo "<h2>$message</h2>";
+        if ($note) echo "<p class=\"not-you\">$note</p>";
+        echo "<button class=\"btn-primary btn\">$action</button>";
+      ?>
+    </section>
+  
+    <main id="main_form" class="hide-right">
+      <button class="btn-return btn" tabindex="4">Back</button>
+      <form action="processForm.php" method="post" id="form_body" target="_self">
+        <!-- JS INSERTION HERE -->
+      </form>
+      <button class="btn-next btn" tabindex="2">Next</button>
+    </main>
+  </div>
 
-  <main id="main_form">
-    <form action="processForm.php" method="post" id="form_body" target="_self">
-      <!-- JS INSERTION HERE -->
-    </form>
-  </main>
 
   <footer id="footer">
     <span>Tim Leobert E. Villacin</span>
