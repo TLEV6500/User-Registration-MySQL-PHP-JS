@@ -20,7 +20,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $checkExisting->bind_param("s", $email);
   $checkExisting->execute();
   
-  // TODO move this to js as ajax
   // If user already exists, do not insert to db
   $checkExisting->store_result();
   $post = null;
@@ -28,11 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $post = $conn->prepare("INSERT INTO users (firstname, lastname, birthday, gender, email, password) VALUES (?, ?, ?, ?, ?, ?)");
     $post->bind_param("ssssss", $firstname, $lastname, $birthday, $gender, $email, $password);
     if ($post->execute() == false) {
+      http_response_code(500);
       echo "Error: " . $post->error;
     }
-  }
-  else {
-    // Signal page to indicate existing user or divert to login instead of registering
   }
 
   $_SESSION['firstname'] = $firstname;
@@ -40,7 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if ($post) $post->close();
   $checkExisting->close();
   $conn->close();
+  http_response_code(200);
 } else {
+  http_response_code(400);
   echo "Invalid request method.";
 }
 // Return to form page after submission
