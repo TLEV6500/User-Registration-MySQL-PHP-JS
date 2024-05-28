@@ -7,14 +7,14 @@ import { getElement } from "./htmlInterface.mjs";
   fieldLabel:[
     HTMLInputType:'',
     HTMLInputAttributes:{},
-    children:{
+    children:[
       [
         HTMLType: '',
         innerText:'',
         HTMLAttributes:{}
       ],
       ...
-    }
+    ]
   ],
   ...
 };
@@ -29,7 +29,6 @@ const fields = {
       name: 'firstname',
       required: true,
       autocomplete: 'on',
-      autofocus: true,
       autocapitalize: 'words'
     },
   ],
@@ -52,7 +51,8 @@ const fields = {
       name: 'birthday',
       required: true,
       max: '2024-01-01',
-      autocomplete: 'off'
+      autocomplete: 'off',
+      title: 'Must be later than Jan. 1, 2024.'
     }
   ],
   'Gender': [
@@ -90,7 +90,18 @@ const fields = {
       placeholder: 'juan.delacruz@gmail.com',
       required: true,
       autocomplete: 'on',
-      pattern: '[A-Za-z0-9\\._%+\\-]+@[A-Za-z0-9\\.\\-]+\\.[A-Za-z]{2,}'
+      pattern: '[A-Za-z0-9\\._%+\\-]+@[A-Za-z0-9\\.\\-]+\\.[A-Za-z]{2,}',
+    }
+  ],
+  'Phone': [
+    'input',
+    {
+      type: 'tel',
+      name: 'phone_num',
+      autocomplete: 'on',
+      pattern: '^09\\d{9}$',
+      placeholder: '09123456789 (optional)',
+      title: "Must contain no spaces, 11 digits, and begin with a '09'"
     }
   ],
   'Password': [
@@ -100,7 +111,8 @@ const fields = {
       name: 'password',
       required: true,
       autocomplete: 'on',
-      pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@.#$!%*?&^])[A-Za-z\\d@.#$!%*?&]{8,15}$'
+      pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@.#$!%*?&^])[A-Za-z\\d@.#$!%*?&]{8,15}$',
+      title: 'Must span 8-15 of at least one lowercase, uppercase, and special character.'
     }
   ],
   'Confirm Password': [
@@ -109,9 +121,17 @@ const fields = {
       type: 'password',
       required: true,
       autocomplete: 'on',
-      pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@.#$!%*?&^])[A-Za-z\\d@.#$!%*?&]{8,15}$'
+      pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@.#$!%*?&^])[A-Za-z\\d@.#$!%*?&]{8,15}$',
     }
   ],
+  'Ready to Go?': [
+    'input',
+    {
+      type: 'submit',
+      value: 'Let\'s go!',
+      title: 'Begin your journey!',
+    }
+  ]
 };
 
 const HTMLForm = getElement('#form_body');
